@@ -122,18 +122,18 @@ The following block diagram illustrates the high-level architecture of the Mushr
 ```mermaid
 graph TD
     subgraph "User Interface"
-        MobileApp[Mobile Application<br/>(React Native)]
+        MobileApp["Mobile Application<br/>(React Native)"]
     end
 
     subgraph "Cloud Backend"
-        FirebaseDB[(Firebase Realtime Database)]
-        FirebaseStorage[(Firebase Storage)]
+        FirebaseDB[("Firebase Realtime Database")]
+        FirebaseStorage[("Firebase Storage")]
     end
 
     subgraph "Hardware Layer (ESP32)"
-        MainESP[Main Controller<br/>(ESP32)]
-        CamESP[Camera Module<br/>(ESP32-CAM)]
-        ArmESP[Robot Arm<br/>(ESP32)]
+        MainESP["Main Controller<br/>(ESP32)"]
+        CamESP["Camera Module<br/>(ESP32-CAM)"]
+        ArmESP["Robot Arm<br/>(ESP32)"]
     end
 
     subgraph "Sensors & Actuators"
@@ -142,7 +142,7 @@ graph TD
         Soil[Soil Moisture]
         PH[pH Sensor]
         Light[Grow Lights]
-        Servos[Arm Servos (x5)]
+        Servos["Arm Servos (x5)"]
     end
 
     %% Connections
