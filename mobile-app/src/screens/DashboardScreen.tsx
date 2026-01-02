@@ -85,7 +85,7 @@ export const DashboardScreen = () => {
       resizeMode="cover"
     >
       <ScrollView 
-        style={[styles.container, { backgroundColor: 'rgba(0,0,0,0.7)' }]} // Overlay for readability
+        style={[styles.container, { backgroundColor: 'rgba(0,0,0,0.7)' }]}
         contentContainerStyle={{ paddingBottom: 20 }}
       >
         <View style={styles.header}>
