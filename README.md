@@ -138,10 +138,10 @@ graph TD
 
     subgraph "Sensors & Actuators"
         DHT[DHT11]
-        ENS[ENS160 Air Quality]
-        Soil[Soil Moisture]
-        PH[pH Sensor]
-        Light[Grow Lights]
+        ENS["ENS160 Air Quality"]
+        Soil["Soil Moisture"]
+        PH["pH Sensor"]
+        Light["Grow Lights"]
         Servos["Arm Servos (x5)"]
     end
 
@@ -151,10 +151,11 @@ graph TD
 
     MainESP <-->|Sensor Data| FirebaseDB
     MainESP -->|Control| Light
-    MainESP <--|Read| DHT
-    MainESP <--|Read| ENS
-    MainESP <--|Read| Soil
-    MainESP <--|Read| PH
+    
+    DHT -->|Read| MainESP
+    ENS -->|Read| MainESP
+    Soil -->|Read| MainESP
+    PH -->|Read| MainESP
 
     CamESP -->|Upload Images| FirebaseStorage
     CamESP -->|Update Stream IP| FirebaseDB
