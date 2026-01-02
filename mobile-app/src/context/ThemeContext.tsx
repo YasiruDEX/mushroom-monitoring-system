@@ -46,11 +46,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       ...baseTheme,
       colors: {
         ...baseTheme.colors,
-        primary: '#3b82f6',
-        secondary: '#8b5cf6',
-        background: mode === 'dark' ? '#0f0f1a' : '#f5f5f5',
-        surface: mode === 'dark' ? '#1a1a2e' : '#ffffff',
-        onSurface: mode === 'dark' ? '#ffffff' : '#1a1a2e',
+        primary: '#4caf50', // Green 500
+        secondary: '#81c784', // Green 300
+        background: mode === 'dark' ? '#0f1a0f' : '#f1f8e9', // Very dark green for dark mode, light green for light mode
+        surface: mode === 'dark' ? '#1b2e1b' : '#ffffff', // Dark green surface
+        onSurface: mode === 'dark' ? '#e8f5e9' : '#1b2e1b',
       }
     };
   }, [mode]);
