@@ -115,6 +115,106 @@ Located in `firmware/robotArm`.
 
 ---
 
+## System Architecture
+
+The following block diagram illustrates the high-level architecture of the Mushroom Monitoring System, showing how the mobile app interacts with the hardware via Firebase.
+
+```mermaid
+graph TD
+    subgraph "User Interface"
+        MobileApp[Mobile Application<br/>(React Native)]
+    end
+
+    subgraph "Cloud Backend"
+        FirebaseDB[(Firebase Realtime Database)]
+        FirebaseStorage[(Firebase Storage)]
+    end
+
+    subgraph "Hardware Layer (ESP32)"
+        MainESP[Main Controller<br/>(ESP32)]
+        CamESP[Camera Module<br/>(ESP32-CAM)]
+        ArmESP[Robot Arm<br/>(ESP32)]
+    end
+
+    subgraph "Sensors & Actuators"
+        DHT[DHT11]
+        ENS[ENS160 Air Quality]
+        Soil[Soil Moisture]
+        PH[pH Sensor]
+        Light[Grow Lights]
+        Servos[Arm Servos (x5)]
+    end
+
+    %% Connections
+    MobileApp <-->|Read/Write Data| FirebaseDB
+    MobileApp <-->|View Images| FirebaseStorage
+
+    MainESP <-->|Sensor Data| FirebaseDB
+    MainESP -->|Control| Light
+    MainESP <--|Read| DHT
+    MainESP <--|Read| ENS
+    MainESP <--|Read| Soil
+    MainESP <--|Read| PH
+
+    CamESP -->|Upload Images| FirebaseStorage
+    CamESP -->|Update Stream IP| FirebaseDB
+
+    ArmESP <-->|Read Commands/Status| FirebaseDB
+    ArmESP -->|Control| Servos
+```
+
+## Hardware Pinouts
+
+### 1. Main Controller (ESP32)
+
+| GPIO | Component | Function |
+|------|-----------|----------|
+| **4** | DHT11 | Temperature & Humidity Data |
+| **15** | Grow Lights | PWM Control (LEDC Ch0) |
+| **16** | pH Sensor | RS485 RX (MAX485 RO) |
+| **17** | pH Sensor | RS485 TX (MAX485 DI) |
+| **21** | ENS160 | I2C SDA |
+| **22** | ENS160 | I2C SCL |
+| **23** | Soil Sensor | Digital Output (Threshold) |
+| **25** | pH Sensor | RS485 Driver Enable (DE) |
+| **33** | pH Sensor | RS485 Receiver Enable (RE) |
+| **34** | Soil Sensor | Analog Input (ADC1_CH6) |
+
+### 2. Robot Arm (ESP32)
+
+| GPIO | Servo Joint | Note |
+|------|-------------|------|
+| **12** | Shoulder | Up/Down motion |
+| **13** | Base | Rotation (0-180°) |
+| **14** | Elbow | Extension |
+| **26** | Gripper | Open/Close |
+| **27** | Wrist | Orientation |
+
+> **⚠️ Power Note:** Do NOT power the servos directly from the ESP32. Use an external 5V/6V (3A+) power supply for the motors, sharing the ground (GND) with the ESP32.
+
+### 3. Camera Module (ESP32-CAM)
+
+| GPIO | Function |
+|------|----------|
+| **0** | XCLK |
+| **2** | PCLK |
+| **4** | Lamp / Flash (Optional) |
+| **5** | Y2 (Data) |
+| **18** | Y3 (Data) |
+| **19** | Y4 (Data) |
+| **21** | Y5 (Data) |
+| **36** | Y6 (Data) |
+| **39** | Y7 (Data) |
+| **34** | Y8 (Data) |
+| **35** | Y9 (Data) |
+| **22** | PCLK |
+| **23** | HREF |
+| **25** | VSYNC |
+| **26** | SIOD (I2C SDA) |
+| **27** | SIOC (I2C SCL) |
+
+---
+
 ## QnA
 
 **Q: How do I connect the hardware?**
