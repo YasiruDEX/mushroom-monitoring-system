@@ -44,7 +44,7 @@ const SensorControlItem: React.FC<SensorControlItemProps> = ({
           {icon}
         </View>
         <View style={{ flex: 1, marginLeft: 12 }}>
-          <Text variant="titleMedium" style={{ fontWeight: '600' }}>{t(title.replace(' ', '').replace('Level', '').toLowerCase()) || title}</Text> {/* Quick mapping or pass key */}
+          <Text variant="titleMedium" style={{ fontWeight: '600' }}>{t(title.replace(' ', '').replace('Level', '').toLowerCase()) || title}</Text>
           {lastReading !== undefined && (
              <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>
                Last: {lastReading.toFixed(2)} {unit}
