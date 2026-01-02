@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { View, Dimensions, StyleSheet } from 'react-native';
 import { Surface, Text, useTheme } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 import { LineChart } from 'react-native-chart-kit';
 import { SensorData } from '../../types';
 
@@ -25,6 +26,7 @@ const SensorChart: React.FC<SensorChartProps> = ({
   const theme = useTheme();
   const screenWidth = Dimensions.get('window').width;
   const chartWidth = screenWidth - 48; // Padding correction
+  const { t } = useTranslation();
 
   // Process data for Chart Kit
   // We only show last 10-15 points to avoid overcrowding since chart kit is static-ish
@@ -51,9 +53,9 @@ const SensorChart: React.FC<SensorChartProps> = ({
           strokeWidth: 2
         }
       ],
-      legend: [title] 
+      legend: [t(title)] 
     };
-  }, [displayData, color, title]);
+  }, [displayData, color, title, t]);
 
   const lastValue = displayData.length > 0 ? displayData[displayData.length - 1].value : 0;
 
@@ -61,7 +63,7 @@ const SensorChart: React.FC<SensorChartProps> = ({
     <Surface style={styles.card} elevation={2}>
       <View style={styles.header}>
         <Text variant="titleMedium" style={{ color: color, fontWeight: 'bold' }}>
-          {title} <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>({unit})</Text>
+          {t(title)} <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>({unit})</Text>
         </Text>
       </View>
 
@@ -102,7 +104,7 @@ const SensorChart: React.FC<SensorChartProps> = ({
           />
         ) : (
           <View style={styles.noData}>
-            <Text>No Data Available</Text>
+            <Text>{t('noDataAvailable')}</Text>
           </View>
         )}
       </View>
@@ -110,10 +112,10 @@ const SensorChart: React.FC<SensorChartProps> = ({
       {displayData.length > 0 && (
         <View style={styles.footer}>
           <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>
-             Current: <Text style={{ color: color, fontWeight: 'bold' }}>{lastValue.toFixed(2)} {unit}</Text>
+             {t('current')}: <Text style={{ color: color, fontWeight: 'bold' }}>{lastValue.toFixed(2)} {unit}</Text>
           </Text>
           <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>
-            {displayData.length} readings
+            {displayData.length} {t('readings')}
           </Text>
         </View>
       )}

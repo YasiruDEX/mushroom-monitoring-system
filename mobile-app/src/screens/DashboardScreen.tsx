@@ -3,16 +3,19 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 import { Text, Button, ActivityIndicator, useTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useTranslation } from 'react-i18next';
 
 import SensorCard from '../components/Dashboard/SensorCard';
 import SensorChart from '../components/Dashboard/SensorChart';
 import VideoFeed from '../components/Dashboard/VideoFeed';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 import { SensorData, CurrentSensorValues } from '../types';
 import { subscribeSensorData, subscribeCurrentSensorValues, subscribeCameraUrl } from '../services/firebaseService';
 
 export const DashboardScreen = () => {
   const theme = useTheme();
+  const { t } = useTranslation();
   
   const [phData, setPhData] = useState<SensorData[]>([]);
   const [moistureData, setMoistureData] = useState<SensorData[]>([]);
@@ -70,7 +73,7 @@ export const DashboardScreen = () => {
     return (
       <View style={[styles.container, styles.centered]}>
         <ActivityIndicator size="large" animating={true} color={theme.colors.primary} />
-        <Text style={{ marginTop: 16, color: theme.colors.onBackground }}>Loading sensor data...</Text>
+        <Text style={{ marginTop: 16, color: theme.colors.onBackground }}>{t('loadingSensorData')}</Text>
       </View>
     );
   }
@@ -81,11 +84,14 @@ export const DashboardScreen = () => {
         <View style={styles.titleContainer}>
            <MaterialCommunityIcons name="view-dashboard" size={32} color={theme.colors.primary} />
            <Text variant="headlineMedium" style={{ fontWeight: 'bold', color: theme.colors.onBackground, marginLeft: 8 }}>
-             Dashboard
+             {t('dashboard')}
            </Text>
         </View>
+        <LanguageSwitcher />
+      </View>
+      <View style={{ alignItems: 'flex-end', marginBottom: 16 }}>
         <Button mode="text" onPress={() => console.log('Refresh')}>
-          Last Updated: {new Date().toLocaleTimeString()}
+          {t('lastUpdated')}: {new Date().toLocaleTimeString()}
         </Button>
       </View>
 
@@ -93,11 +99,11 @@ export const DashboardScreen = () => {
       <VideoFeed streamUrl={cameraUrl || undefined} />
 
       {/* Quick Stats Grid */}
-      <Text variant="titleLarge" style={[styles.sectionTitle, { color: theme.colors.onBackground }]}>Current Status</Text>
+      <Text variant="titleLarge" style={[styles.sectionTitle, { color: theme.colors.onBackground }]}>{t('currentStatus')}</Text>
       <View style={styles.grid}>
          {/* Sensor Cards */}
         <SensorCard
-          title="Temperature"
+          title="temperature"
           value={currentValues.temperature}
           unit="°C"
           icon="temperature"
@@ -108,7 +114,7 @@ export const DashboardScreen = () => {
           optimalMax={28}
         />
         <SensorCard
-          title="Humidity"
+          title="humidity"
           value={currentValues.humidity}
           unit="%"
           icon="humidity"
@@ -119,7 +125,7 @@ export const DashboardScreen = () => {
           optimalMax={95}
         />
         <SensorCard
-          title="CO₂ Level"
+          title="co2"
           value={currentValues.co2}
           unit="ppm"
           icon="co2"
@@ -130,7 +136,7 @@ export const DashboardScreen = () => {
           optimalMax={1000}
         />
         <SensorCard
-          title="Moisture"
+          title="moisture"
           value={currentValues.moisture}
           unit="%"
           icon="moisture"
@@ -141,7 +147,7 @@ export const DashboardScreen = () => {
           optimalMax={85}
         />
         <SensorCard
-          title="pH Level"
+          title="ph"
           value={currentValues.ph}
           unit="pH"
           icon="ph"
@@ -154,10 +160,10 @@ export const DashboardScreen = () => {
       </View>
 
       {/* Charts */}
-      <Text variant="titleLarge" style={[styles.sectionTitle, { color: theme.colors.onBackground }]}>Trends</Text>
+      <Text variant="titleLarge" style={[styles.sectionTitle, { color: theme.colors.onBackground }]}>{t('trends')}</Text>
       
       <SensorChart
-        title="Temperature"
+        title="temperature"
         data={temperatureData}
         color="#ff6b6b"
         unit="°C"
@@ -166,7 +172,7 @@ export const DashboardScreen = () => {
       />
       
       <SensorChart
-        title="Humidity"
+        title="humidity"
         data={humidityData}
         color="#4ecdc4"
         unit="%"
@@ -175,7 +181,7 @@ export const DashboardScreen = () => {
       />
 
       <SensorChart
-        title="CO₂ Level"
+        title="co2"
         data={co2Data}
         color="#a78bfa"
         unit="ppm"
@@ -202,7 +208,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 8,
     marginTop: 8,
   },
   titleContainer: {

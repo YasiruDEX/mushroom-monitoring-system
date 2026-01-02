@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Surface, Text, IconButton, useTheme, ActivityIndicator } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 interface VideoFeedProps {
@@ -10,13 +11,14 @@ interface VideoFeedProps {
 
 const VideoFeed: React.FC<VideoFeedProps> = ({ 
   streamUrl, 
-  title = 'Live Camera Feed' 
+  title = 'liveCameraFeed' 
 }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>('No video stream available');
+  const [error, setError] = useState<string | null>('noVideoSignal');
   const [key, setKey] = useState(0); // Used to force reload Image
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const handleRetryConnection = useCallback(() => {
     setIsLoading(true);
@@ -30,7 +32,7 @@ const VideoFeed: React.FC<VideoFeedProps> = ({
         setKey(prev => prev + 1);
       } else {
         setIsConnected(false);
-        setError('Connection failed - No stream URL configured');
+        setError('connectionFailed');
       }
       setIsLoading(false);
     }, 2000);
@@ -46,7 +48,7 @@ const VideoFeed: React.FC<VideoFeedProps> = ({
     <Surface style={styles.card} elevation={2}>
       {/* Header */}
       <View style={styles.header}>
-        <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>{title}</Text>
+        <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>{t(title)}</Text>
         <View style={styles.headerRight}>
           <View style={[
               styles.statusChip, 
@@ -61,7 +63,7 @@ const VideoFeed: React.FC<VideoFeedProps> = ({
               styles.statusText, 
               { color: isConnected ? '#4caf50' : '#f44336' }
             ]}>
-              {isConnected ? 'LIVE' : 'OFFLINE'}
+              {isConnected ? t('live') : t('offline')}
             </Text>
           </View>
           <IconButton 
@@ -83,7 +85,7 @@ const VideoFeed: React.FC<VideoFeedProps> = ({
             resizeMode="cover"
             onError={() => {
                 setIsConnected(false);
-                setError('Stream unavailable');
+                setError('streamUnavailable');
             }}
           />
         ) : (
@@ -93,9 +95,9 @@ const VideoFeed: React.FC<VideoFeedProps> = ({
                size={40} 
                color="#f44336" 
              />
-             <Text variant="titleMedium" style={{ marginTop: 16 }}>No Video Signal</Text>
+             <Text variant="titleMedium" style={{ marginTop: 16 }}>{t('noVideoSignal')}</Text>
              <Text variant="bodySmall" style={{ textAlign: 'center', marginTop: 8, maxWidth: 250, color: theme.colors.onSurfaceVariant }}>
-               {error || 'Camera feed is currently unavailable.'}
+               {t('cameraUnavailable')}
              </Text>
           </View>
         )}
@@ -103,7 +105,7 @@ const VideoFeed: React.FC<VideoFeedProps> = ({
         {isLoading && (
           <View style={styles.loaderOverlay}>
              <ActivityIndicator animating={true} color={theme.colors.primary} size="large" />
-             <Text style={{ color: 'white', marginTop: 16 }}>Connecting...</Text>
+             <Text style={{ color: 'white', marginTop: 16 }}>{t('connecting')}</Text>
           </View>
         )}
       </View>

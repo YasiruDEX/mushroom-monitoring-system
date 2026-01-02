@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Surface, Text, useTheme } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface SensorCardProps {
@@ -35,6 +36,7 @@ const SensorCard: React.FC<SensorCardProps> = ({
   optimalMax
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   // Ensure value is within bounds for progress calculation
   const clampedValue = Math.min(Math.max(value, minValue), maxValue);
   const progress = ((clampedValue - minValue) / (maxValue - minValue)) * 100;
@@ -50,7 +52,7 @@ const SensorCard: React.FC<SensorCardProps> = ({
       <View style={styles.header}>
         <View>
           <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>
-            {title}
+            {t(title)}
           </Text>
           <View style={styles.valueContainer}>
             <Text variant="headlineMedium" style={{ fontWeight: 'bold', color: theme.colors.onSurface }}>
@@ -82,12 +84,12 @@ const SensorCard: React.FC<SensorCardProps> = ({
         {optimalMin !== undefined && optimalMax !== undefined && (
            <View style={styles.statusContainer}>
              <Text variant="labelSmall" style={{ color: theme.colors.onSurfaceVariant }}>
-               Range: {minValue} - {maxValue}
+               {t('range')}: {minValue} - {maxValue}
              </Text>
              <View style={[styles.badge, { backgroundColor: `${statusColor}20` }]}>
                <View style={[styles.dot, { backgroundColor: statusColor }]} />
                <Text variant="labelSmall" style={{ color: statusColor, fontWeight: 'bold' }}>
-                 {isOptimal ? 'Optimal' : 'Warning'}
+                 {isOptimal ? t('optimal') : t('warning')}
                </Text>
              </View>
            </View>
