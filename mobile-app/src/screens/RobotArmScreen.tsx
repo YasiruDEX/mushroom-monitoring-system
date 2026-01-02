@@ -3,6 +3,7 @@ import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { Surface, Text, Button, Chip, ActivityIndicator, useTheme, Divider } from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useTranslation } from 'react-i18next';
 import { RobotArmPosition, Plot } from '../types';
 import { 
   subscribeRobotArmPosition, 
@@ -13,6 +14,7 @@ import {
 
 export const RobotArmScreen = () => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [robotPosition, setRobotPosition] = useState<RobotArmPosition>({
     currentPlot: 1,
     status: 'idle',
@@ -110,7 +112,7 @@ export const RobotArmScreen = () => {
      return (
         <View style={[styles.container, styles.centered]}>
           <ActivityIndicator size="large" animating={true} color={theme.colors.primary} />
-          <Text style={{ marginTop: 16, color: theme.colors.onBackground }}>Loading robot status...</Text>
+          <Text style={{ marginTop: 16, color: theme.colors.onBackground }}>{t('loadingRobotStatus')}</Text>
         </View>
       );
   }
@@ -120,26 +122,26 @@ export const RobotArmScreen = () => {
       <View style={styles.header}>
         <MaterialIcons name="precision-manufacturing" size={40} color={theme.colors.primary} />
         <Text variant="headlineMedium" style={{ fontWeight: 'bold', color: theme.colors.onBackground, marginLeft: 16 }}>
-          Robot Arm
+          {t('robotArm')}
         </Text>
       </View>
 
       {/* Robot Status Panel */}
       <Surface style={styles.card} elevation={2}>
-        <Text variant="titleLarge" style={{ fontWeight: '600', marginBottom: 16 }}>Robot Status</Text>
+        <Text variant="titleLarge" style={{ fontWeight: '600', marginBottom: 16 }}>{t('robotStatus')}</Text>
         
         <View style={styles.row}>
            <View style={[styles.iconBox, { backgroundColor: theme.colors.primaryContainer }]}>
              <MaterialIcons name="location-on" size={32} color={theme.colors.primary} />
            </View>
            <View style={{ marginLeft: 16 }}>
-             <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>Current Position</Text>
-             <Text variant="headlineSmall" style={{ fontWeight: 'bold' }}>Plot {robotPosition.currentPlot}</Text>
+             <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>{t('currentPosition')}</Text>
+             <Text variant="headlineSmall" style={{ fontWeight: 'bold' }}>{t('plot')} {robotPosition.currentPlot}</Text>
            </View>
         </View>
 
         <View style={{ marginTop: 24, marginBottom: 16 }}>
-           <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant, marginBottom: 8 }}>Status</Text>
+           <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant, marginBottom: 8 }}>{t('status')}</Text>
            <Chip 
              icon={() => isMoving ? <ActivityIndicator size={16} color="#ff9800" /> : <MaterialIcons name="check-circle" size={16} color={getStatusColor(robotPosition.status)} />}
              style={{ backgroundColor: `${getStatusColor(robotPosition.status)}20`, alignSelf: 'flex-start' }}
@@ -149,13 +151,13 @@ export const RobotArmScreen = () => {
            </Chip>
         </View>
 
-        <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>Last Action</Text>
+        <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>{t('lastAction')}</Text>
         <Text variant="bodyLarge">{robotPosition.lastAction}</Text>
       </Surface>
 
       {/* Plot Grid Visualization */}
       <Surface style={styles.card} elevation={2}>
-         <Text variant="titleLarge" style={{ fontWeight: '600', marginBottom: 16 }}>Select Target Plot</Text>
+         <Text variant="titleLarge" style={{ fontWeight: '600', marginBottom: 16 }}>{t('selectTargetPlot')}</Text>
          
          <View style={styles.plotGrid}>
            {plots.map((plot) => {
@@ -194,7 +196,7 @@ export const RobotArmScreen = () => {
                    {isCurrent && <MaterialIcons name="precision-manufacturing" size={16} color="white" />}
                  </View>
                  <Text variant="labelSmall" style={{ color: textColor, opacity: 0.8 }}>
-                   {isInactive ? 'Inactive' : `Last visited:\n${new Date(plot.lastVisited).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+                   {isInactive ? t('inactive') : `${t('lastVisited')}:\n${new Date(plot.lastVisited).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
                  </Text>
                </TouchableOpacity>
              )
@@ -202,15 +204,15 @@ export const RobotArmScreen = () => {
          </View>
          
          <View style={styles.legend}>
-            <View style={styles.legendItem}><View style={[styles.dot, { backgroundColor: theme.colors.primary }]} /><Text variant="labelSmall">Current</Text></View>
+            <View style={styles.legendItem}><View style={[styles.dot, { backgroundColor: theme.colors.primary }]} /><Text variant="labelSmall">{t('current')}</Text></View>
             <View style={styles.legendItem}><View style={[styles.dot, { backgroundColor: theme.colors.secondary }]} /><Text variant="labelSmall">Selected</Text></View>
-            <View style={styles.legendItem}><View style={[styles.dot, { backgroundColor: theme.colors.surfaceDisabled }]} /><Text variant="labelSmall">Inactive</Text></View>
+            <View style={styles.legendItem}><View style={[styles.dot, { backgroundColor: theme.colors.surfaceDisabled }]} /><Text variant="labelSmall">{t('inactive')}</Text></View>
          </View>
       </Surface>
 
       {/* Controls */}
       <Surface style={[styles.card, { marginBottom: 32 }]} elevation={2}>
-         <Text variant="titleLarge" style={{ fontWeight: '600', marginBottom: 16 }}>Controls</Text>
+         <Text variant="titleLarge" style={{ fontWeight: '600', marginBottom: 16 }}>{t('controls')}</Text>
          
          <View style={styles.buttonGrid}>
            <Button 
@@ -221,7 +223,7 @@ export const RobotArmScreen = () => {
              buttonColor="#4caf50"
              style={styles.controlButton}
            >
-             {isMoving ? 'Moving...' : 'Move to Plot'}
+             {isMoving ? t('moving') : t('moveToPlot')}
            </Button>
            
            <Button 
@@ -232,7 +234,7 @@ export const RobotArmScreen = () => {
              buttonColor={theme.colors.primary}
              style={styles.controlButton}
            >
-             Home
+             {t('home')}
            </Button>
          </View>
 
@@ -243,7 +245,7 @@ export const RobotArmScreen = () => {
             buttonColor={theme.colors.error}
             style={{ marginTop: 12 }}
           >
-            Emergency Stop
+            {t('emergencyStop')}
           </Button>
       </Surface>
 

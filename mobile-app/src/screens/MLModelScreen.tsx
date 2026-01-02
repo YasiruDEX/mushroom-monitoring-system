@@ -3,11 +3,13 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 import { Surface, Text, Button, ProgressBar, Switch, Chip, Divider, ActivityIndicator, useTheme, IconButton } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useTranslation } from 'react-i18next';
 import { MLModelInfo } from '../types';
 import { subscribeMLModelInfo, updateMLModelStatus } from '../services/firebaseService';
 
 export const MLModelScreen = () => {
   const theme = useTheme();
+  const { t, i18n } = useTranslation();
   const [modelInfo, setModelInfo] = useState<MLModelInfo | null>(null);
   const [isAutoMode, setIsAutoMode] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -48,7 +50,7 @@ export const MLModelScreen = () => {
     return (
       <View style={[styles.container, styles.centered]}>
         <ActivityIndicator size="large" animating={true} color={theme.colors.secondary} />
-        <Text style={{ marginTop: 16, color: theme.colors.onBackground }}>Loading ML model data...</Text>
+        <Text style={{ marginTop: 16, color: theme.colors.onBackground }}>{t('loadingModelData')}</Text>
       </View>
     );
   }
@@ -57,9 +59,9 @@ export const MLModelScreen = () => {
     return (
       <View style={[styles.container, styles.centered, { padding: 32 }]}>
         <MaterialIcons name="smart-toy" size={60} color={theme.colors.onSurfaceDisabled} />
-        <Text variant="titleLarge" style={{ color: theme.colors.onSurfaceVariant, marginTop: 16 }}>No ML Model Data</Text>
+        <Text variant="titleLarge" style={{ color: theme.colors.onSurfaceVariant, marginTop: 16 }}>{t('noModelData')}</Text>
         <Text style={{ textAlign: 'center', color: theme.colors.onSurfaceVariant, marginTop: 8 }}>
-          Initialize data from the Dashboard to see ML model information.
+          {t('initializeHint')}
         </Text>
       </View>
     );
@@ -70,7 +72,7 @@ export const MLModelScreen = () => {
       <View style={styles.header}>
         <MaterialIcons name="smart-toy" size={40} color={theme.colors.secondary} />
         <Text variant="headlineMedium" style={{ fontWeight: 'bold', color: theme.colors.onBackground, marginLeft: 16 }}>
-          ML Model Info
+          {t('mlModelInfo')}
         </Text>
       </View>
 
@@ -79,7 +81,7 @@ export const MLModelScreen = () => {
         <View style={styles.cardHeader}>
           <View>
             <Text variant="titleLarge" style={{ fontWeight: '600' }}>{modelInfo.name}</Text>
-            <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>Version {modelInfo.version}</Text>
+            <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>{t('version')} {modelInfo.version}</Text>
           </View>
           <Chip
             textStyle={{ color: getStatusColor(modelInfo.status), fontWeight: 'bold' }}
@@ -94,7 +96,7 @@ export const MLModelScreen = () => {
         </Text>
 
         <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant, marginBottom: 4 }}>
-          Model Accuracy
+          {t('modelAccuracy')}
         </Text>
         <View style={styles.progressRow}>
           <ProgressBar progress={modelInfo.accuracy / 100} color="#4caf50" style={styles.progressBar} />
@@ -106,14 +108,14 @@ export const MLModelScreen = () => {
         <View style={styles.row}>
           <MaterialIcons name="access-time" size={16} color={theme.colors.onSurfaceVariant} />
           <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant, marginLeft: 4 }}>
-            Last trained: {new Date(modelInfo.lastTrainedDate).toLocaleDateString()}
+            {t('lastTrained')}: {new Date(modelInfo.lastTrainedDate).toLocaleDateString()}
           </Text>
         </View>
 
         <Divider style={{ marginVertical: 16 }} />
 
         <Text variant="titleSmall" style={{ color: theme.colors.onSurfaceVariant, marginBottom: 8 }}>
-          Input Features
+          {t('inputFeatures')}
         </Text>
         <View style={styles.chipContainer}>
           {modelInfo.features.map((feature, index) => (
@@ -127,13 +129,13 @@ export const MLModelScreen = () => {
       {/* Predictions */}
       <Surface style={styles.card} elevation={2}>
         <Text variant="titleLarge" style={{ fontWeight: '600', marginBottom: 16 }}>
-          <MaterialCommunityIcons name="trending-up" size={24} color="#4caf50" /> Current Predictions
+          <MaterialCommunityIcons name="trending-up" size={24} color="#4caf50" /> {t('currentPredictions')}
         </Text>
 
         {/* Fruiting Readiness */}
         <View style={styles.predictionRow}>
            <View style={styles.rowSpaceBetween}>
-             <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>Fruiting Readiness</Text>
+             <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>{t('fruitingReadiness')}</Text>
              <Text variant="bodyMedium" style={{ color: '#fbbf24', fontWeight: 'bold' }}>{modelInfo.predictions.fruitingReadiness}%</Text>
            </View>
            <ProgressBar progress={modelInfo.predictions.fruitingReadiness / 100} color="#fbbf24" style={styles.progressBarSmall} />
@@ -142,7 +144,7 @@ export const MLModelScreen = () => {
         {/* Health Score */}
         <View style={styles.predictionRow}>
            <View style={styles.rowSpaceBetween}>
-             <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>Health Score</Text>
+             <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>{t('healthScore')}</Text>
              <Text variant="bodyMedium" style={{ color: '#4caf50', fontWeight: 'bold' }}>{modelInfo.predictions.healthScore}%</Text>
            </View>
            <ProgressBar progress={modelInfo.predictions.healthScore / 100} color="#4caf50" style={styles.progressBarSmall} />
@@ -152,9 +154,9 @@ export const MLModelScreen = () => {
         <Surface style={styles.harvestBox}>
            <MaterialIcons name="check-circle" size={32} color="#4caf50" />
            <View style={{ marginLeft: 16 }}>
-             <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>Estimated Harvest Date</Text>
+             <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>{t('estimatedHarvestDate')}</Text>
              <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>
-               {new Date(modelInfo.predictions.estimatedHarvestDate).toLocaleDateString('en-US', {
+               {new Date(modelInfo.predictions.estimatedHarvestDate).toLocaleDateString(i18n.language, {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
@@ -167,11 +169,11 @@ export const MLModelScreen = () => {
         <Divider style={{ marginVertical: 16 }} />
 
         <Text variant="titleSmall" style={{ color: theme.colors.onSurfaceVariant, marginBottom: 8 }}>
-          Model Controls
+          {t('modelControls')}
         </Text>
 
         <View style={styles.rowSpaceBetween}>
-          <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>Auto Light Control (75%)</Text>
+          <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>{t('autoLightControl')} (75%)</Text>
           <Switch value={isAutoMode} onValueChange={setIsAutoMode} color={theme.colors.secondary} />
         </View>
 
@@ -183,14 +185,14 @@ export const MLModelScreen = () => {
             icon={modelInfo.status === 'active' ? "pause" : "play"}
             style={{ flex: 1, marginRight: 8 }}
           >
-            {modelInfo.status === 'active' ? 'Pause' : 'Activate'}
+            {modelInfo.status === 'active' ? t('pause') : t('activate')}
           </Button>
           <Button 
             mode="outlined" 
             icon="refresh" 
             style={{ flex: 1 }}
           >
-            Retrain
+            {t('retrain')}
           </Button>
         </View>
       </Surface>
@@ -198,26 +200,26 @@ export const MLModelScreen = () => {
       {/* Alerts */}
       <Surface style={styles.card} elevation={2}>
         <Text variant="titleLarge" style={{ fontWeight: '600', marginBottom: 16 }}>
-          <MaterialIcons name="warning" size={24} color="#fbbf24" /> Alerts & Recommendations
+          <MaterialIcons name="warning" size={24} color="#fbbf24" /> {t('alertsRecommendations')}
         </Text>
 
         <Surface style={[styles.alertBox, { borderColor: '#4caf50' }]}>
            <View style={styles.row}>
              <MaterialIcons name="check-circle" size={18} color="#4caf50" />
-             <Text variant="titleSmall" style={{ color: '#4caf50', marginLeft: 8, fontWeight: 'bold' }}>Optimal Conditions</Text>
+             <Text variant="titleSmall" style={{ color: '#4caf50', marginLeft: 8, fontWeight: 'bold' }}>{t('optimalConditions')}</Text>
            </View>
            <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant, marginTop: 4 }}>
-             Temperature and humidity are within optimal range for fruiting.
+             {t('optimalConditionsMsg')}
            </Text>
         </Surface>
 
         <Surface style={[styles.alertBox, { borderColor: '#fbbf24' }]}>
            <View style={styles.row}>
              <MaterialIcons name="warning" size={18} color="#fbbf24" />
-             <Text variant="titleSmall" style={{ color: '#fbbf24', marginLeft: 8, fontWeight: 'bold' }}>CO2 Warning</Text>
+             <Text variant="titleSmall" style={{ color: '#fbbf24', marginLeft: 8, fontWeight: 'bold' }}>{t('co2Warning')}</Text>
            </View>
            <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant, marginTop: 4 }}>
-             CO2 levels approaching upper limit. Consider increasing ventilation.
+             {t('co2WarningMsg')}
            </Text>
         </Surface>
       </Surface>

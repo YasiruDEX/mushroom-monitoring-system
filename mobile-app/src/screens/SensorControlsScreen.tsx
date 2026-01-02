@@ -4,6 +4,7 @@ import { Surface, Text, Button, Switch, ActivityIndicator, useTheme, Divider, Ic
 import Slider from '@react-native-community/slider';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useTranslation } from 'react-i18next';
 
 import { 
   triggerSensorReading, 
@@ -35,6 +36,7 @@ const SensorControlItem: React.FC<SensorControlItemProps> = ({
   unit
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   return (
     <Surface style={styles.sensorCard} elevation={2}>
       <View style={styles.sensorHeader}>
@@ -42,7 +44,7 @@ const SensorControlItem: React.FC<SensorControlItemProps> = ({
           {icon}
         </View>
         <View style={{ flex: 1, marginLeft: 12 }}>
-          <Text variant="titleMedium" style={{ fontWeight: '600' }}>{title}</Text>
+          <Text variant="titleMedium" style={{ fontWeight: '600' }}>{t(title.replace(' ', '').replace('Level', '').toLowerCase()) || title}</Text> {/* Quick mapping or pass key */}
           {lastReading !== undefined && (
              <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>
                Last: {lastReading.toFixed(2)} {unit}
@@ -60,7 +62,7 @@ const SensorControlItem: React.FC<SensorControlItemProps> = ({
           style={{ flex: 1, backgroundColor: color }}
           compact
         >
-          {isReading ? '...' : 'Read'}
+          {isReading ? '...' : t('read')}
         </Button>
         <Button 
           mode="outlined" 
@@ -69,7 +71,7 @@ const SensorControlItem: React.FC<SensorControlItemProps> = ({
           textColor={color}
           compact
         >
-          Calibrate
+          {t('calibrate')}
         </Button>
       </View>
     </Surface>
@@ -78,6 +80,7 @@ const SensorControlItem: React.FC<SensorControlItemProps> = ({
 
 export const SensorControlsScreen = () => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [readingStates, setReadingStates] = useState<Record<string, boolean>>({});
   const [lightIntensity, setLightIntensity] = useState<number>(75);
   const [isAutoLight, setIsAutoLight] = useState<boolean>(true);
@@ -126,7 +129,7 @@ export const SensorControlsScreen = () => {
   const sensors = [
     {
       type: 'temperature' as const,
-      title: 'Temperature',
+      title: 'temperature',
       icon: <MaterialCommunityIcons name="thermometer" size={24} color="#ff6b6b" />,
       color: '#ff6b6b',
       unit: '°C',
@@ -134,7 +137,7 @@ export const SensorControlsScreen = () => {
     },
     {
       type: 'humidity' as const,
-      title: 'Humidity',
+      title: 'humidity',
       icon: <MaterialCommunityIcons name="water-percent" size={24} color="#4ecdc4" />,
       color: '#4ecdc4',
       unit: '%',
@@ -142,7 +145,7 @@ export const SensorControlsScreen = () => {
     },
     {
       type: 'co2' as const,
-      title: 'CO2 Level',
+      title: 'co2',
       icon: <MaterialCommunityIcons name="molecule-co2" size={24} color="#a78bfa" />,
       color: '#a78bfa',
       unit: 'ppm',
@@ -150,7 +153,7 @@ export const SensorControlsScreen = () => {
     },
     {
       type: 'moisture' as const,
-      title: 'Moisture',
+      title: 'moisture',
       icon: <MaterialCommunityIcons name="water" size={24} color="#60a5fa" />,
       color: '#60a5fa',
       unit: '%',
@@ -158,7 +161,7 @@ export const SensorControlsScreen = () => {
     },
     {
       type: 'ph' as const,
-      title: 'pH Level',
+      title: 'ph',
       icon: <MaterialCommunityIcons name="flask" size={24} color="#fbbf24" />,
       color: '#fbbf24',
       unit: 'pH',
@@ -171,7 +174,7 @@ export const SensorControlsScreen = () => {
       <View style={styles.header}>
         <MaterialIcons name="sensors" size={40} color="#4ecdc4" />
         <Text variant="headlineMedium" style={{ fontWeight: 'bold', color: theme.colors.onBackground, marginLeft: 16 }}>
-          Sensor Controls
+          {t('sensorControls')}
         </Text>
       </View>
 
@@ -190,12 +193,12 @@ export const SensorControlsScreen = () => {
       {/* Light Control */}
       <Surface style={styles.bigCard} elevation={2}>
         <Text variant="titleLarge" style={{ fontWeight: '600', marginBottom: 16, display: 'flex', alignItems: 'center' }}>
-          <MaterialIcons name="light-mode" size={24} color="#fbbf24" /> Light Control Unit
+          <MaterialIcons name="light-mode" size={24} color="#fbbf24" /> {t('lightControlUnit')}
         </Text>
 
         <View>
           <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant, marginBottom: 8 }}>
-            Light Intensity: {lightIntensity.toFixed(0)}%
+            {t('lightIntensity')}: {lightIntensity.toFixed(0)}%
           </Text>
           <Slider
             style={{ width: '100%', height: 40 }}
@@ -217,7 +220,7 @@ export const SensorControlsScreen = () => {
         <Divider style={{ marginVertical: 16 }} />
 
         <View style={styles.rowSpaceBetween}>
-           <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>Light Status: {lightStatus ? 'ON' : 'OFF'}</Text>
+           <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>{t('lightStatus')}: {lightStatus ? t('on') : t('off')}</Text>
            <Switch 
              value={lightStatus} 
              onValueChange={() => {
@@ -231,7 +234,7 @@ export const SensorControlsScreen = () => {
         <View style={[styles.rowSpaceBetween, { marginTop: 16 }]}>
            <View style={{ flex: 1, paddingRight: 16 }}>
              <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>
-               Auto Mode (ML Controlled)
+               {t('autoMode')}
              </Text>
            </View>
            <Switch 
@@ -248,8 +251,8 @@ export const SensorControlsScreen = () => {
            <View style={[styles.dot, { backgroundColor: lightStatus ? '#fbbf24' : theme.colors.surfaceDisabled }]} />
            <Text variant="labelSmall" style={{ flex: 1, color: theme.colors.onSurfaceVariant }}>
              {isAutoLight 
-               ? 'Light is controlled by ML model predictions.'
-               : 'Manual control mode enabled.'
+               ? t('autoModeMsg')
+               : t('manualModeMsg')
              }
            </Text>
         </View>
@@ -258,7 +261,7 @@ export const SensorControlsScreen = () => {
 
       {/* Quick Actions */}
       <Surface style={[styles.bigCard, { marginBottom: 32 }]} elevation={2}>
-        <Text variant="titleLarge" style={{ fontWeight: '600', marginBottom: 16 }}>Quick Actions</Text>
+        <Text variant="titleLarge" style={{ fontWeight: '600', marginBottom: 16 }}>{t('quickActions')}</Text>
         <View style={styles.actionGrid}>
           <Button 
             mode="contained" 
@@ -267,7 +270,7 @@ export const SensorControlsScreen = () => {
             buttonColor="#4caf50"
             style={styles.actionBtn}
           >
-            Read All
+            {t('readAll')}
           </Button>
           <Button 
             mode="outlined" 
@@ -276,7 +279,7 @@ export const SensorControlsScreen = () => {
             textColor="#ff9800"
             style={[styles.actionBtn, { borderColor: '#ff9800' }]}
           >
-            Calibrate All
+            {t('calibrateAll')}
           </Button>
         </View>
       </Surface>
